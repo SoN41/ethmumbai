@@ -1,9 +1,9 @@
-import Header from "@/Components/ui/Header";
+import Feed from "@/pages/feed";
 
 export default function Home() {
     return (
         <div>
-            <Header />
+            <Feed />
         </div>
     )
 }
