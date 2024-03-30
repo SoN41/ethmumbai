@@ -34,7 +34,7 @@ const Page: React.FC = () => {
     return (
         <div className="flex flex-col lg:flex-row">
             <Sidebar />
-            <div className="container mx-auto px-4 py-8 lg:ml-40">
+            <div className="container mx-auto px-4 py-8 lg:ml-40 bg-gray-100">
                 <h2 className="text-2xl font-bold mb-4">Upload Post</h2>
                 <form onSubmit={handleSubmit}>
                     <div className="mb-4">

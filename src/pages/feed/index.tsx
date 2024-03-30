@@ -1,45 +1,36 @@
-import React from "react";
+import React, { useState } from "react";
 import Sidebar from "@/Components/ui/Sidebar";
-import { FaHeart } from "react-icons/fa";
-import { FaComment } from "react-icons/fa";
-import { HiShare } from "react-icons/hi";
-import { RiAddCircleLine } from "react-icons/ri"; // Import plus icon
+import { FaHeart, FaComment } from "react-icons/fa";
+import { HiShare, HiOutlineHeart } from "react-icons/hi";
+import { RiAddCircleLine } from "react-icons/ri";
 
+// StorySection component displaying user stories
 const StorySection: React.FC = () => {
-    // Define your user's story data here
-    const userStory = { imageUrl: "URL_OF_USER_STORY_IMAGE" }; // Replace URL_OF_USER_STORY_IMAGE with the URL of the user's story image
-    // const userStory = '';
-
-    // Define other stories data here
+    const userStory = { imageUrl: "URL_OF_USER_STORY_IMAGE" }; // Placeholder for user story image URL
     const stories = [
         { id: 1, imageUrl: "URL_OF_OTHER_STORY_IMAGE" },
         { id: 2, imageUrl: "URL_OF_OTHER_STORY_IMAGE" },
     ];
 
     return (
-        <div className="px-4 py-2">
+        <div className="px-4 py-2 border-gray-600">
             <div className="flex space-x-4 overflow-x-auto">
-                {/* Display user's story */}
                 {userStory ? (
                     <div className="flex-shrink-0">
                         <div className="relative">
-                            <img src={userStory.imageUrl} alt="User Story" className="w-16 h-16 rounded-full" />
-                            {/* Outline for story */}
+                            <img src={userStory.imageUrl} alt="User Story" className="w-16 h-16 rounded-full border-2 border-blue-500" />
                             <div className="absolute inset-0 rounded-full border-2 border-blue-500 pointer-events-none"></div>
                         </div>
                     </div>
                 ) : (
-                    // If no user story, display a button with a plus icon
                     <button className="flex-shrink-0 flex items-center justify-center w-16 h-16 rounded-full bg-blue-500 text-white">
-                        <RiAddCircleLine className="w-10 h-10" /> 
+                        <RiAddCircleLine className="w-10 h-10" />
                     </button>
                 )}
-                {/* Display other stories */}
                 {stories.map((story) => (
                     <div key={story.id} className="flex-shrink-0">
                         <div className="relative">
-                            <img src={story.imageUrl} alt="Story" className="w-16 h-16 rounded-full" />
-                            {/* Outline for story */}
+                            <img src={story.imageUrl} alt="Story" className="w-16 h-16 rounded-full border-2 border-gray-300" />
                             <div className="absolute inset-0 rounded-full border-2 border-customOutline pointer-events-none"></div>
                         </div>
                     </div>
@@ -49,28 +40,97 @@ const StorySection: React.FC = () => {
     );
 };
 
+
+// Feed component displaying posts
 const Feed: React.FC = () => {
-    const posts = [
-        { id: 1, title: "Post 1", body: "Body of post 1", imageUrl: "https://www.instagram.com/static/images/web/mobile_nav_type_logo.png/735145cfe0a4.png", caption: "Caption 1" },
-        { id: 2, title: "Post 2", body: "Body of post 2", imageUrl: "https://www.instagram.com/static/images/web/mobile_nav_type_logo.png/735145cfe0a4.png", caption: "Caption 2" },
-        { id: 3, title: "Post 3", body: "Body of post 3", imageUrl: "https://www.instagram.com/static/images/web/mobile_nav_type_logo.png/735145cfe0a4.png", caption: "Caption 3" },
-        { id: 4, title: "Post 4", body: "Body of post 4", imageUrl: "https://www.instagram.com/static/images/web/mobile_nav_type_logo.png/735145cfe0a4.png", caption: "Caption 4" },
-        { id: 5, title: "Post 5", body: "Body of post 5", imageUrl: "https://www.instagram.com/static/images/web/mobile_nav_type_logo.png/735145cfe0a4.png", caption: "Caption 5" },
-        { id: 6, title: "Post 6", body: "Body of post 6", imageUrl: "https://www.instagram.com/static/images/web/mobile_nav_type_logo.png/735145cfe0a4.png", caption: "Caption 6" },
-    ];
+    // State to manage posts
+    const [posts, setPosts] = useState([
+        { id: 1, title: "Post 1", body: "Body of post 1", imageUrl: "https://img.freepik.com/free-photo/painting-mountain-lake-with-mountain-background_188544-9126.jpg", caption: "Caption 1", liked: false, likesCount: 0, comments: [], following: false },
+        { id: 1, title: "Post 1", body: "Body of post 1", imageUrl: "https://img.freepik.com/free-photo/painting-mountain-lake-with-mountain-background_188544-9126.jpg", caption: "Caption 1", liked: false, likesCount: 0, comments: [], following: false },
+        { id: 1, title: "Post 1", body: "Body of post 1", imageUrl: "https://img.freepik.com/free-photo/painting-mountain-lake-with-mountain-background_188544-9126.jpg", caption: "Caption 1", liked: false, likesCount: 0, comments: [], following: false },
+        { id: 1, title: "Post 1", body: "Body of post 1", imageUrl: "https://img.freepik.com/free-photo/painting-mountain-lake-with-mountain-background_188544-9126.jpg", caption: "Caption 1", liked: false, likesCount: 0, comments: [], following: false },
+        { id: 1, title: "Post 1", body: "Body of post 1", imageUrl: "https://img.freepik.com/free-photo/painting-mountain-lake-with-mountain-background_188544-9126.jpg", caption: "Caption 1", liked: false, likesCount: 0, comments: [], following: false },
+        { id: 1, title: "Post 1", body: "Body of post 1", imageUrl: "https://img.freepik.com/free-photo/painting-mountain-lake-with-mountain-background_188544-9126.jpg", caption: "Caption 1", liked: false, likesCount: 0, comments: [], following: false },
+        // Add more posts here if needed
+    ]);
+
+    // State to manage comment inputs for each post
+    const [commentInputs, setCommentInputs] = useState<{ [postId: number]: string }>({});
+
+    // State to manage comment visibility for each post
+    const [commentVisibility, setCommentVisibility] = useState<{ [postId: number]: boolean }>({});
+
+    // Function to handle like button click
+    const handleLikeClick = (postId: number) => {
+        setPosts((prevPosts) =>
+            prevPosts.map((post) => {
+                if (post.id === postId) {
+                    // Toggle the liked status
+                    return { ...post, liked: !post.liked, likesCount: post.liked ? post.likesCount - 1 : post.likesCount + 1 };
+                }
+                return post;
+            })
+        );
+    };
+
+    // Function to handle follow button click
+    const handleFollowButtonClick = (postId: number) => {
+        setPosts((prevPosts) =>
+            prevPosts.map((post) => {
+                if (post.id === postId) {
+                    // Toggle the following status
+                    return { ...post, following: !post.following };
+                }
+                return post;
+            })
+        );
+    };
+
+    // Function to handle comment button click
+    const handleCommentButtonClick = (postId: number) => {
+        setCommentVisibility((prevVisibility) => ({ ...prevVisibility, [postId]: true }));
+    };
+
+    // Function to handle adding a comment
+    const handleAddComment = (postId: number) => {
+        if (!commentInputs[postId]) return; // Prevent adding empty comments
+        setPosts((prevPosts) =>
+            prevPosts.map((post) => {
+                if (post.id === postId) {
+                    // Add the new comment to the post
+                    return { ...post, comments: [...post.comments, commentInputs[postId]] };
+                }
+                return post;
+            })
+        );
+        setCommentInputs((prevInputs) => ({ ...prevInputs, [postId]: "" })); // Clear comment input after adding comment
+    };
+
+    // Function to handle comment input change
+    const handleCommentInputChange = (postId: number, event: React.ChangeEvent<HTMLInputElement>) => {
+        setCommentInputs((prevInputs) => ({ ...prevInputs, [postId]: event.target.value }));
+    };
+
+    // Function to handle share button click
+    const handleShareButtonClick = (post: any) => {
+        // Placeholder for sharing functionality
+        console.log("Share button clicked for post:", post);
+    };
 
     return (
         <div className="flex">
+            <hr className=" pt-4" />
             <Sidebar />
             <div className="flex-1 overflow-auto ml-40">
                 <StorySection />
+                <hr className="mt-4 mb-4 border-t border-gray-600 w-full" />
                 <div className="container mx-auto px-4 py-8">
-                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         {posts.map((post) => (
-                            <div key={post.id} className="border border-gray-300 p-4 rounded relative">
+                            <div key={post.id} className="border border-gray-300 p-4 rounded relative bg-gray-100">
                                 {/* Follow button */}
-                                <button className="absolute top-2 right-2 bg-blue-500 text-white px-2 py-1 rounded">
-                                    Follow
+                                <button className={`absolute top-2 right-2 px-2 py-1 rounded ${post.following ? 'bg-gray-200 text-black' : 'bg-blue-500'} text-white`} onClick={() => handleFollowButtonClick(post.id)}>
+                                    {post.following ? 'Following' : 'Follow'}
                                 </button>
                                 {/* Post content */}
                                 <div className="flex items-center justify-between mb-2">
@@ -80,18 +140,61 @@ const Feed: React.FC = () => {
                                 <img src={post.imageUrl} alt={post.title} className="w-full mb-2 rounded-md" />
                                 <p className="text-gray-500">{post.caption}</p>
                                 <div className="flex justify-between mt-4">
-                                    <button className="flex items-center space-x-2 text-gray-600">
-                                        <FaHeart />
-                                        <span>Like</span>
+                                    {/* Like button */}
+                                    <button className="flex items-center space-x-2 text-gray-600" onClick={() => handleLikeClick(post.id)}>
+                                        {post.liked ? <HiOutlineHeart color="red" /> : <FaHeart />}
+                                        {post.likesCount > 0 ? (
+                                            <span>{post.likesCount} Likes</span>
+                                        ) : (
+                                            <span>Like</span>
+                                        )}
                                     </button>
-                                    <button className="flex items-center space-x-2 text-gray-600">
+
+                                    {/* Comment button */}
+                                    <button className="flex items-center space-x-2 text-gray-600" onClick={() => handleCommentButtonClick(post.id)}>
                                         <FaComment />
                                         <span>Comment</span>
                                     </button>
-                                    <button className="flex items-center space-x-2 text-gray-600">
+                                    {/* Share button */}
+                                    <button className="flex items-center space-x-2 text-gray-600" onClick={() => handleShareButtonClick(post)}>
                                         <HiShare />
                                         <span>Share</span>
                                     </button>
+                                </div>
+                                {/* Comment input and button */}
+                                {commentVisibility[post.id] && (
+                                    <div className="flex mt-4">
+                                        <input
+                                            type="text"
+                                            placeholder="Add a comment..."
+                                            className="flex-1 border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-blue-500"
+                                            value={commentInputs[post.id] || ""}
+                                            onChange={(e) => handleCommentInputChange(post.id, e)}
+                                        />
+                                        <button
+                                            className="ml-2 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:bg-blue-600"
+                                            onClick={() => handleAddComment(post.id)}
+                                        >
+                                            Post
+                                        </button>
+                                    </div>
+                                )}
+                                {/* Render comments */}
+                                <div className="mt-2">
+                                    {post.comments.length > 0 && (
+                                        <div className="flex items-center py-1">
+                                            <div className="w-8 h-8 rounded-full bg-gray-200"> user </div>
+                                            <div className="ml-2 text-gray-600">{post.comments[0]}</div>
+                                            {post.comments.length > 1 && (
+                                                <button
+                                                    className="ml-2 text-gray-600 underline focus:outline-none"
+                                                    onClick={() => handleCommentButtonClick(post.id)}
+                                                >
+                                                    View {post.comments.length - 1} more comment(s)
+                                                </button>
+                                            )}
+                                        </div>
+                                    )}
                                 </div>
                             </div>
                         ))}
