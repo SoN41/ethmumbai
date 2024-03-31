@@ -1,8 +1,10 @@
+/* eslint-disable @next/next/no-img-element */
 import React, { useState } from "react";
 import Sidebar from "@/Components/ui/Sidebar";
 import { FaHeart, FaComment } from "react-icons/fa";
 import { HiShare, HiOutlineHeart } from "react-icons/hi";
 import { RiAddCircleLine } from "react-icons/ri";
+import toast, { Toaster } from "react-hot-toast";
 
 // StorySection component displaying user stories
 const StorySection: React.FC = () => {
@@ -46,11 +48,11 @@ const Feed: React.FC = () => {
     // State to manage posts
     const [posts, setPosts] = useState([
         { id: 1, title: "Post 1", body: "Body of post 1", imageUrl: "https://img.freepik.com/free-photo/painting-mountain-lake-with-mountain-background_188544-9126.jpg", caption: "Caption 1", liked: false, likesCount: 0, comments: [], following: false },
-        { id: 1, title: "Post 1", body: "Body of post 1", imageUrl: "https://img.freepik.com/free-photo/painting-mountain-lake-with-mountain-background_188544-9126.jpg", caption: "Caption 1", liked: false, likesCount: 0, comments: [], following: false },
-        { id: 1, title: "Post 1", body: "Body of post 1", imageUrl: "https://img.freepik.com/free-photo/painting-mountain-lake-with-mountain-background_188544-9126.jpg", caption: "Caption 1", liked: false, likesCount: 0, comments: [], following: false },
-        { id: 1, title: "Post 1", body: "Body of post 1", imageUrl: "https://img.freepik.com/free-photo/painting-mountain-lake-with-mountain-background_188544-9126.jpg", caption: "Caption 1", liked: false, likesCount: 0, comments: [], following: false },
-        { id: 1, title: "Post 1", body: "Body of post 1", imageUrl: "https://img.freepik.com/free-photo/painting-mountain-lake-with-mountain-background_188544-9126.jpg", caption: "Caption 1", liked: false, likesCount: 0, comments: [], following: false },
-        { id: 1, title: "Post 1", body: "Body of post 1", imageUrl: "https://img.freepik.com/free-photo/painting-mountain-lake-with-mountain-background_188544-9126.jpg", caption: "Caption 1", liked: false, likesCount: 0, comments: [], following: false },
+        { id: 2, title: "Post 1", body: "Body of post 1", imageUrl: "https://img.freepik.com/free-photo/painting-mountain-lake-with-mountain-background_188544-9126.jpg", caption: "Caption 1", liked: false, likesCount: 0, comments: [], following: false },
+        { id: 3, title: "Post 1", body: "Body of post 1", imageUrl: "https://img.freepik.com/free-photo/painting-mountain-lake-with-mountain-background_188544-9126.jpg", caption: "Caption 1", liked: false, likesCount: 0, comments: [], following: false },
+        { id: 4, title: "Post 1", body: "Body of post 1", imageUrl: "https://img.freepik.com/free-photo/painting-mountain-lake-with-mountain-background_188544-9126.jpg", caption: "Caption 1", liked: false, likesCount: 0, comments: [], following: false },
+        { id: 5, title: "Post 1", body: "Body of post 1", imageUrl: "https://img.freepik.com/free-photo/painting-mountain-lake-with-mountain-background_188544-9126.jpg", caption: "Caption 1", liked: false, likesCount: 0, comments: [], following: false },
+        { id: 6, title: "Post 1", body: "Body of post 1", imageUrl: "https://img.freepik.com/free-photo/painting-mountain-lake-with-mountain-background_188544-9126.jpg", caption: "Caption 1", liked: false, likesCount: 0, comments: [], following: false },
         // Add more posts here if needed
     ]);
 
@@ -73,28 +75,34 @@ const Feed: React.FC = () => {
         );
     };
 
-    // Function to handle follow button click
-    const handleFollowButtonClick = (postId: number) => {
-        setPosts((prevPosts) =>
-            prevPosts.map((post) => {
-                if (post.id === postId) {
-                    // Toggle the following status
-                    return { ...post, following: !post.following };
+// Function to handle follow button click
+const handleFollowButtonClick = (postId: number) => {
+    setPosts((prevPosts) =>
+        prevPosts.map((post) => {
+            if (post.id === postId) {
+                // Toggle the following status
+                const updatedPost = { ...post, following: !post.following };
+                if (updatedPost.following) {
+                    toast.success('following');
+                } else {
+                    toast.error('unfollowed');
                 }
-                return post;
-            })
-        );
-    };
+                return updatedPost;
+            }
+            return post;
+        })
+    );
+};
+
 
     // Function to handle comment button click
     const handleCommentButtonClick = (postId: number) => {
-        setCommentVisibility((prevVisibility) => ({ ...prevVisibility, [postId]: true }));
+        setCommentVisibility((prevVisibility) => ({ ...prevVisibility, [postId]: !prevVisibility[postId] }));
     };
-
     // Function to handle adding a comment
     const handleAddComment = (postId: number) => {
         if (!commentInputs[postId]) return; // Prevent adding empty comments
-        setPosts((prevPosts) =>
+        setPosts((prevPosts): any =>
             prevPosts.map((post) => {
                 if (post.id === postId) {
                     // Add the new comment to the post
@@ -112,9 +120,18 @@ const Feed: React.FC = () => {
     };
 
     // Function to handle share button click
+    // const handleShareButtonClick = (post: any) => {
+    //     navigator.clipboard.writeText(post.caption)
+    //         .then(() => alert('Post caption copied to clipboard!'))
+    //         .catch((error) => console.error('Failed to copy: ', error));
+    // };
     const handleShareButtonClick = (post: any) => {
-        // Placeholder for sharing functionality
-        console.log("Share button clicked for post:", post);
+        navigator.clipboard.writeText(post.id)
+            .then(() => toast.success('Post link copied to clipboard!'))
+            .catch((error) => {
+                console.error('Failed to copy: ', error);
+                toast.error('Failed to copy post caption!');
+            });
     };
 
     return (
@@ -129,11 +146,12 @@ const Feed: React.FC = () => {
                         {posts.map((post) => (
                             <div key={post.id} className="border border-gray-300 p-4 rounded relative bg-gray-100">
                                 {/* Follow button */}
-                                <button className={`absolute top-2 right-2 px-2 py-1 rounded ${post.following ? 'bg-gray-200 text-black' : 'bg-blue-500'} text-white`} onClick={() => handleFollowButtonClick(post.id)}>
+                                <button className={`absolute top-6 right-2 px-2 py-1 rounded w-20 h-8 ${post.following ? 'bg-gray-100 text-black border border-black' : 'bg-blue-500'} text-black`} onClick={() => handleFollowButtonClick(post.id)}>
                                     {post.following ? 'Following' : 'Follow'}
                                 </button>
                                 {/* Post content */}
-                                <div className="flex items-center justify-between mb-2">
+                                <div className="flex items-center mb-2">
+                                    <img src='https://img.freepik.com/free-photo/painting-mountain-lake-with-mountain-background_188544-9126.jpg' alt="User Peofile" className="w-8 h-8 rounded-full border-2 border-black" />
                                     <h3 className="p-3">username</h3>
                                     {/* You can adjust the spacing as needed */}
                                 </div>
@@ -182,25 +200,39 @@ const Feed: React.FC = () => {
                                 {/* Render comments */}
                                 <div className="mt-2">
                                     {post.comments.length > 0 && (
-                                        <div className="flex items-center py-1">
-                                            <div className="w-8 h-8 rounded-full bg-gray-200"> user </div>
-                                            <div className="ml-2 text-gray-600">{post.comments[0]}</div>
-                                            {post.comments.length > 1 && (
+                                        <>
+                                            <div className="flex items-center py-1">
+                                                <div className="w-8 h-8 rounded-full bg-gray-200"> user </div>
+                                                <div className="ml-2 text-gray-600">{post.comments[0]}</div>
+                                            </div>
+                                            {post.comments.length > 1 && !commentVisibility[post.id] && (
                                                 <button
                                                     className="ml-2 text-gray-600 underline focus:outline-none"
                                                     onClick={() => handleCommentButtonClick(post.id)}
                                                 >
-                                                    View {post.comments.length - 1} more comment(s)
+                                                    Show more comments
                                                 </button>
                                             )}
-                                        </div>
+                                            {commentVisibility[post.id] && (
+                                                <>
+                                                    {post.comments.slice(1).map((comment, index) => (
+                                                        <div key={index} className="flex items-center py-1">
+                                                            <div className="w-8 h-8 rounded-full bg-gray-200"> user </div>
+                                                            <div className="ml-2 text-gray-600">{comment}</div>
+                                                        </div>
+                                                    ))}
+                                                </>
+                                            )}
+                                        </>
                                     )}
                                 </div>
+
                             </div>
                         ))}
                     </div>
                 </div>
             </div>
+            <Toaster position="bottom-left" />
         </div>
     );
 };
